@@ -12,33 +12,48 @@ const val loginRoute = "login_route"
 const val signupRoute = "signup_route"
 
 @Composable
-fun AuthNavHost() {
+fun AuthNavHost(
+    onAuthenticated: () -> Unit
+) {
     val navController = rememberNavController()
 
     NavHost(
         navController = navController,
         startDestination = loginRoute
     ) {
-        loginScreen()
-        signupScreen()
+        loginScreen(
+            onSignupClick = { navController.navigateToSignupScreen() },
+            onAuthenticated = onAuthenticated
+        )
+        signupScreen(onAuthenticated = onAuthenticated)
     }
 }
 
-fun NavGraphBuilder.authGraph(){
-    composable(authNavGraph){
-        AuthNavHost()
+fun NavGraphBuilder.authGraph(
+    onAuthenticated: () -> Unit
+) {
+    composable(authNavGraph) {
+        AuthNavHost(onAuthenticated = onAuthenticated)
     }
 }
 
-fun NavGraphBuilder.loginScreen() {
+fun NavGraphBuilder.loginScreen(
+    onSignupClick: () -> Unit,
+    onAuthenticated: () -> Unit
+) {
     composable(loginRoute) {
-        LoginScreen()
+        LoginScreen(
+            onSignupClick = onSignupClick,
+            onLoggedIn = onAuthenticated
+        )
     }
 }
 
-fun NavGraphBuilder.signupScreen() {
+fun NavGraphBuilder.signupScreen(
+    onAuthenticated: () -> Unit
+) {
     composable(signupRoute) {
-        SignupScreen()
+        SignupScreen(onSignup = onAuthenticated)
     }
 }
 

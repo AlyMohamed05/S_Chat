@@ -75,6 +75,8 @@ dependencies {
     implementation(Compose.navigation)
     implementation(Compose.material)
     implementation(Compose.hiltNavigationCompose)
+    implementation(Compose.iconsExtension)
+    debugImplementation(Compose.debugTooling)
 
     implementation(DaggerHilt.hiltAndroid)
     kapt(DaggerHilt.hiltCompiler)
@@ -83,4 +85,7 @@ dependencies {
 
     testImplementation(Testing.junit4)
     testImplementation(Testing.composeUiTest)
+
+    androidTestImplementation(Testing.junitAndroidExt)
+    androidTestImplementation(Testing.composeUiTest)
 }

@@ -3,6 +3,8 @@ package com.silverbullet.schat
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.rememberNavController
 import com.silverbullet.schat.navigation.SChatNavHost
@@ -16,8 +18,10 @@ class MainActivity : ComponentActivity() {
         installSplashScreen()
         setContent {
             SChatTheme {
-                val navController = rememberNavController()
-                SChatNavHost(navController = navController)
+                Surface(color = MaterialTheme.colors.surface) {
+                    val navController = rememberNavController()
+                    SChatNavHost(navController = navController)
+                }
             }
         }
     }

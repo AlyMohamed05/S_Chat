@@ -19,4 +19,7 @@ object Compose {
     const val hiltNavigationCompose = "androidx.hilt:hilt-navigation-compose:$hiltNavigationComposeVersion"
 
     const val debugTooling = "androidx.compose.ui:ui-tooling:${composeVersion}"
+
+    private const val iconsExtensionVersion = "1.3.1"
+    const val iconsExtension = "androidx.compose.material:material-icons-extended:$iconsExtensionVersion"
 }
