@@ -10,8 +10,8 @@ fun NavController.navigateToChatScreen(){
     this.navigate(chatRoute)
 }
 
-fun NavGraphBuilder.chatScreen(){
+fun NavGraphBuilder.chatScreen(navigateBack: () -> Unit){
     composable(chatRoute){
-        ChatScreen()
+        ChatScreen(onCloseClick = navigateBack)
     }
 }

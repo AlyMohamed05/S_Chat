@@ -9,12 +9,14 @@ object PreviewData {
     val user = User(
         name = "Cathrine",
         photoUrl = null,
+        online = true,
         id = 0
     )
 
     val user2 = User(
         name = "X User",
         photoUrl = null,
+        online = true,
         id = 1
     )
 

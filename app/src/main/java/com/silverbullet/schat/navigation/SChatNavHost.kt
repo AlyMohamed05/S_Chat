@@ -10,6 +10,7 @@ import androidx.navigation.compose.rememberNavController
 import com.silverbullet.schat.feature_auth.authGraph
 import com.silverbullet.schat.feature_auth.authNavGraph
 import com.silverbullet.schat.feature_chat.chatScreen
+import com.silverbullet.schat.feature_chat.navigateToChatScreen
 import com.silverbullet.schat.feature_home.homeRoute
 import com.silverbullet.schat.feature_home.homeScreen
 
@@ -40,7 +41,7 @@ fun NavGraphBuilder.mainGraph() {
 fun MainGraph() {
     val navController = rememberNavController()
     NavHost(navController, startDestination = homeRoute) {
-        homeScreen()
-        chatScreen()
+        homeScreen(onChatClick = { chat -> navController.navigateToChatScreen() })
+        chatScreen(navigateBack = { navController.popBackStack() })
     }
 }
