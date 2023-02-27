@@ -18,14 +18,14 @@ class ChatViewModel @Inject constructor() : ViewModel() {
     val messageText = _messageText.asStateFlow()
 
     init {
-        _chatState.value = PreviewData.chat
+        _chatState.value = PreviewData.chat.copy(messages = PreviewData.generateFakeMessages())
     }
 
     fun setMessageText(value: String) {
         _messageText.value = value
     }
 
-    fun send(){
+    fun send() {
         _messageText.value = ""
     }
 }

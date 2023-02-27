@@ -45,5 +45,22 @@ object PreviewData {
         messages = messages
     )
 
+    fun generateFakeMessages(): List<Message> {
+        return buildList {
+            repeat(100) {
+                add(
+                    Message(
+                        text = "Message $it",
+                        senderId = user2.id,
+                        receiverId = user.id,
+                        timestamp = System.currentTimeMillis() + 100,
+                        seen = false,
+                        id = 1
+                    )
+                )
+            }
+        }
+    }
+
 
 }

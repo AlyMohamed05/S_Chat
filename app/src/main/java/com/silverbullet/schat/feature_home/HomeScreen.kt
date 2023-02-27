@@ -3,6 +3,7 @@ package com.silverbullet.schat.feature_home
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
@@ -44,7 +45,11 @@ fun HomeScreen(
             onValueChange = viewModel::setSearchText,
             hint = stringResource(id = R.string.search_hint),
             leadingIcon = {
-                Icon(imageVector = Icons.Default.Search, contentDescription = null)
+                Icon(
+                    imageVector = Icons.Default.Search,
+                    contentDescription = null,
+                    tint = MaterialTheme.colors.onSurface
+                )
             },
             modifier = Modifier
                 .fillMaxWidth()
@@ -55,7 +60,7 @@ fun HomeScreen(
             items(1000) {
                 ChatItem(
                     chat = PreviewData.chat,
-                    onClick = { chat -> onChatClick(chat)},
+                    onClick = { chat -> onChatClick(chat) },
                     isMyMessage = { true },
                     modifier = Modifier.fillMaxWidth()
                 )

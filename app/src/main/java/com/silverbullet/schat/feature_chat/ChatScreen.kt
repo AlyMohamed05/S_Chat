@@ -8,12 +8,11 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.material.MaterialTheme
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
@@ -42,17 +41,16 @@ fun ChatScreen(
 
     Box(
         modifier = Modifier
-            .fillMaxSize()
-            .background(Color(0xFFF4F4F4)),
+            .fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
             ChatTop(
                 user = PreviewData.user,
-                onCloseClick =  onCloseClick,
+                onCloseClick = onCloseClick,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Color.White)
+                    .background(MaterialTheme.colors.surface)
             )
             chatState.value?.let { chat ->
                 LazyColumn(

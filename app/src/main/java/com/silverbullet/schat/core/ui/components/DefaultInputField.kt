@@ -28,7 +28,7 @@ fun DefaultInputField(
         modifier = modifier
             .defaultMinSize(minHeight = 56.dp)
             .clip(RoundedCornerShape(32.dp))
-            .background(Color(0xFFEAEAEA))
+            .background(if(MaterialTheme.colors.isLight)Color(0xFFEAEAEA) else Color(0xFF6F7378))
     ) {
         Row(
             modifier = Modifier

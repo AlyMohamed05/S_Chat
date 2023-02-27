@@ -1,8 +1,7 @@
 package com.silverbullet.schat.feature_auth
 
 import androidx.compose.runtime.Composable
-import androidx.navigation.NavController
-import androidx.navigation.NavGraphBuilder
+import androidx.navigation.*
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -13,7 +12,7 @@ const val signupRoute = "signup_route"
 
 @Composable
 fun AuthNavHost(
-    onAuthenticated: () -> Unit
+    onLoggedIn: () -> Unit
 ) {
     val navController = rememberNavController()
 
@@ -23,9 +22,9 @@ fun AuthNavHost(
     ) {
         loginScreen(
             onSignupClick = { navController.navigateToSignupScreen() },
-            onAuthenticated = onAuthenticated
+            onAuthenticated = onLoggedIn
         )
-        signupScreen(onAuthenticated = onAuthenticated)
+        signupScreen(onSignedUp = navController::popBackStack)
     }
 }
 
@@ -33,7 +32,7 @@ fun NavGraphBuilder.authGraph(
     onAuthenticated: () -> Unit
 ) {
     composable(authNavGraph) {
-        AuthNavHost(onAuthenticated = onAuthenticated)
+        AuthNavHost(onLoggedIn = onAuthenticated)
     }
 }
 
@@ -50,10 +49,10 @@ fun NavGraphBuilder.loginScreen(
 }
 
 fun NavGraphBuilder.signupScreen(
-    onAuthenticated: () -> Unit
+    onSignedUp: () -> Unit
 ) {
     composable(signupRoute) {
-        SignupScreen(onSignup = onAuthenticated)
+        SignupScreen(onSignedUp = onSignedUp)
     }
 }
 

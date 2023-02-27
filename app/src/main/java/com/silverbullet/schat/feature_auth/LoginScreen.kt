@@ -1,7 +1,7 @@
 package com.silverbullet.schat.feature_auth
 
+import android.widget.Toast
 import androidx.compose.animation.core.*
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -11,6 +11,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
@@ -21,9 +22,9 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusDirection
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
@@ -34,7 +35,6 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.silverbullet.schat.R
 import com.silverbullet.schat.core.ui.theme.LocalSpacing
-import com.silverbullet.schat.core.ui.theme.TextGrey
 import com.silverbullet.schat.feature_auth.components.AnimatedLock
 import com.silverbullet.schat.feature_auth.components.AuthInputField
 
@@ -46,12 +46,10 @@ fun LoginScreen(
     onLoggedIn: () -> Unit
 ) {
 
-    val state = viewModel.loginScreenState.collectAsState()
-
-    val scrollState = rememberScrollState()
-
-    val focusManager = LocalFocusManager.current
-    val softwareKeyboard = LocalSoftwareKeyboardController.current
+    val usernameFieldState = viewModel.usernameFieldState.collectAsState()
+    val passwordFieldState = viewModel.passwordFieldState.collectAsState()
+    val hidePasswordState = viewModel.hidePassword.collectAsState()
+    val isLocked = viewModel.isLocked.collectAsState()
 
     val loginButtonEnabled = viewModel.loginButtonEnabled.collectAsState()
     val loginButtonScale = animateFloatAsState(
@@ -60,10 +58,26 @@ fun LoginScreen(
         else 0.7f
     )
 
+    val scrollState = rememberScrollState()
+
+    val focusManager = LocalFocusManager.current
+    val softwareKeyboard = LocalSoftwareKeyboardController.current
+    val context = LocalContext.current
+
+    LaunchedEffect(key1 = Unit) {
+        viewModel.event.collect { event ->
+            when (event) {
+                LoginViewModel.UiEvent.IsLoggedIn -> onLoggedIn()
+                is LoginViewModel.UiEvent.ToastMessage -> {
+                    Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White)
             .verticalScroll(scrollState)
             .padding(horizontal = LocalSpacing.current.mediumSpace),
         verticalArrangement = Arrangement.spacedBy(LocalSpacing.current.largeSpace),
@@ -71,12 +85,14 @@ fun LoginScreen(
     ) {
         Spacer(modifier = Modifier.height(LocalConfiguration.current.screenHeightDp.dp * 0.4f))
         AuthInputField(
-            value = state.value.usernameText,
+            value = usernameFieldState.value.value,
             onValueChanged = viewModel::setUsernameValue,
             textStyle = TextStyle(
                 fontSize = 14.sp,
-                color = TextGrey
+                color = MaterialTheme.colors.onSurface
             ),
+            hasError = usernameFieldState.value.hasError,
+            error = usernameFieldState.value.error,
             singleLine = true,
             keyboardActions = KeyboardActions(
                 onNext = {
@@ -88,26 +104,30 @@ fun LoginScreen(
                 imeAction = ImeAction.Next
             ),
             label = stringResource(id = R.string.username),
-            labelStyle = TextStyle(color = Color.Black),
+            labelStyle = TextStyle(color = MaterialTheme.colors.onSurface),
             modifier = Modifier.fillMaxWidth()
         )
         AuthInputField(
-            value = state.value.passwordText,
+            value = passwordFieldState.value.value,
             onValueChanged = viewModel::setPasswordValue,
             textStyle = TextStyle(
                 fontSize = 14.sp,
-                color = TextGrey
+                color = MaterialTheme.colors.onSurface
             ),
             label = stringResource(id = R.string.password),
-            labelStyle = TextStyle(color = Color.Black),
+            labelStyle = TextStyle(color = MaterialTheme.colors.onSurface),
             singleLine = true,
+            hasError = passwordFieldState.value.hasError,
+            error = passwordFieldState.value.error,
             modifier = Modifier.fillMaxWidth(),
-            hideInput = state.value.shouldHidePassword,
+            hideInput = hidePasswordState.value,
             trailingIcon = {
                 Icon(
-                    imageVector = if (state.value.shouldHidePassword) Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
+                    imageVector = if (hidePasswordState.value) Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
                     contentDescription = null,
+                    tint = MaterialTheme.colors.onSurface,
                     modifier = Modifier
+                        .size(18.dp)
                         .clip(CircleShape)
                         .clickable { viewModel.togglePasswordVisibility() }
                 )
@@ -123,10 +143,15 @@ fun LoginScreen(
         Box(
             modifier = Modifier
                 .clip(CircleShape)
-                .clickable { onLoggedIn() }
+                .clickable {
+                    // only call login if the button is enabled
+                    if (loginButtonEnabled.value)
+                        viewModel.login()
+                }
         ) {
             AnimatedLock(
-                locked = state.value.isLocked,
+                locked = isLocked.value,
+                color = MaterialTheme.colors.onSurface,
                 modifier = Modifier
                     .graphicsLayer {
                         scaleX = loginButtonScale.value

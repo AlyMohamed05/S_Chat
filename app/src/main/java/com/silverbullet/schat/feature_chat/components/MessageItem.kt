@@ -32,7 +32,7 @@ fun MessageItem(
     Box(
         modifier = modifier
             .clip(boxShape)
-            .background(Color.White)
+            .background(if (MaterialTheme.colors.isLight) Color.White else Color(0xFFABB0B8))
             .padding(12.dp)
     ) {
         Text(

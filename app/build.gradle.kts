@@ -83,6 +83,9 @@ dependencies {
 
     implementation(Timber.timber)
 
+    implementation(project(Modules.coreData))
+    implementation(project(Modules.coreModel))
+
     testImplementation(Testing.junit4)
     testImplementation(Testing.composeUiTest)
 

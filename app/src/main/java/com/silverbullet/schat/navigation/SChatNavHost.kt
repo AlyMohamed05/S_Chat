@@ -20,7 +20,9 @@ fun SChatNavHost(navController: NavHostController) {
         navController = navController,
         startDestination = authNavGraph
     ) {
-        authGraph(onAuthenticated = { navController.navigateToMainGraph() })
+        authGraph(
+            onAuthenticated = { navController.navigateToMainGraph() }
+        )
         mainGraph()
     }
 }
