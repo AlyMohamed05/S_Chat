@@ -44,7 +44,7 @@ class SChatApiNetworkInterceptor @Inject constructor(
         accessToken?.let { token ->
             val authenticatedRequest = originalRequest
                 .newBuilder()
-                .header("Authentication", "Bearer $token")
+                .header("Authorization", "Bearer $token")
                 .build()
             val response = chain.proceed(authenticatedRequest)
             if (response.code == 401 && refreshToken != null) {
@@ -80,6 +80,10 @@ class SChatApiNetworkInterceptor @Inject constructor(
                         }
                     }
                 }
+            }else{
+                // There is an access token (which is invalid) but there is no refresh token
+                // so we should just return the response
+                return response
             }
         }
         // if access token is null, then it might be that user hasn't logged in yet
@@ -91,7 +95,7 @@ class SChatApiNetworkInterceptor @Inject constructor(
                 // Then user has just logged in and we have the token
                 val authenticatedRequest = originalRequest
                     .newBuilder()
-                    .header("Authentication", "Bearer $token")
+                    .header("Authorization", "Bearer $token")
                     .build()
                 return chain.proceed(authenticatedRequest)
             }

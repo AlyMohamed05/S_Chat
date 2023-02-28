@@ -28,3 +28,16 @@ sealed interface LoginResult {
 
     object NetworkError : LoginResult
 }
+
+sealed interface ConnectionResult {
+
+    object ConnectedSuccessfully : ConnectionResult
+
+    object UserNotFound : ConnectionResult
+
+    object AlreadyConnected : ConnectionResult
+
+    object NetworkError : ConnectionResult
+
+    object UnexpectedError: ConnectionResult
+}
