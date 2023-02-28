@@ -1,5 +1,7 @@
 package com.silverbullet.core.network.di
 
+import com.silverbullet.core.network.SChatApiNetworkInterceptor
+import com.silverbullet.core.network.TokenController
 import com.silverbullet.core.network.auth.AuthNetworkSource
 import com.silverbullet.core.network.auth.AuthNetworkSourceImpl
 import dagger.Module
@@ -7,6 +9,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import kotlinx.serialization.json.Json
+import okhttp3.Interceptor
 import javax.inject.Singleton
 
 @Module
@@ -19,5 +22,20 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideAuthNetworkSource(json: Json): AuthNetworkSource = AuthNetworkSourceImpl(json)
+    fun provideSChatApiNetworkInterceptor(
+        tokenController: TokenController,
+        networkJson: Json
+    ): Interceptor {
+        return SChatApiNetworkInterceptor(
+            tokenController = tokenController,
+            networkJson = networkJson
+        )
+    }
+
+    @Provides
+    @Singleton
+    fun provideAuthNetworkSource(
+        json: Json,
+        interceptor: Interceptor
+    ): AuthNetworkSource = AuthNetworkSourceImpl(json, interceptor)
 }

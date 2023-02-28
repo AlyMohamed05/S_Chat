@@ -4,6 +4,7 @@ import com.silverbullet.core.data.auth.results.RepoLoginResult
 import com.silverbullet.core.data.auth.results.RepoSignupResult
 import com.silverbullet.core.data.mapper.toUserInfo
 import com.silverbullet.core.data.utils.RepoResult
+import com.silverbullet.core.network.TokenController
 import com.silverbullet.core.network.utils.SignupResult
 import com.silverbullet.core.network.auth.AuthNetworkSource
 import com.silverbullet.core.network.utils.LoginResult
@@ -12,7 +13,8 @@ import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(
-    private val authNetworkSource: AuthNetworkSource
+    private val authNetworkSource: AuthNetworkSource,
+    private val tokenController: TokenController
 ) : AuthRepository {
 
     override fun signup(
@@ -48,7 +50,8 @@ class AuthRepositoryImpl @Inject constructor(
             )
             when (loginResult) {
                 is LoginResult.LoggedIn -> {
-                    // TODO: Save the access token !
+                    tokenController.saveAccessToken(loginResult.accessToken)
+                    tokenController.saveRefreshToken(loginResult.refreshToken)
                     emit(RepoResult.HasResult(result = RepoLoginResult.LoggedIn))
                 }
                 LoginResult.InvalidCredentials -> {

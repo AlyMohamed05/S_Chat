@@ -26,10 +26,4 @@ interface AuthNetworkSource {
      */
     suspend fun isUsernameAvailable(username: String): Boolean?
 
-    /**
-     * @return token if refreshed else then it wasn't able to refresh token
-     * // TODO: Implement better handling for refreshment failure
-     */
-    suspend fun refreshToken(refreshToken: String): String?
-
 }

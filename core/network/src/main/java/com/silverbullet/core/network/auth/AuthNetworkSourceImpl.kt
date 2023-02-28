@@ -4,12 +4,12 @@ import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFact
 import com.silverbullet.core.network.utils.LoginResult
 import com.silverbullet.core.network.utils.SignupResult
 import com.silverbullet.core.network.auth.model.request.LoginRequest
-import com.silverbullet.core.network.auth.model.request.RefreshTokenRequest
 import com.silverbullet.core.network.auth.model.request.SignupRequest
 import com.silverbullet.core.network.utils.ApiErrorCodes
 import com.silverbullet.core.network.utils.toApiErrorResponse
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
+import okhttp3.Interceptor
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -17,12 +17,14 @@ import retrofit2.Retrofit
 import java.io.IOException
 
 class AuthNetworkSourceImpl(
-    private val networkJson: Json
+    private val networkJson: Json,
+    private val apiAuthInterceptor: Interceptor
 ) : AuthNetworkSource {
 
     private val client by lazy {
         OkHttpClient
             .Builder()
+            .addInterceptor(apiAuthInterceptor)
             .addInterceptor(
                 HttpLoggingInterceptor().apply { setLevel(HttpLoggingInterceptor.Level.BODY) }
             )
@@ -95,16 +97,6 @@ class AuthNetworkSourceImpl(
             return false
         } catch (e: IOException) {
             return null
-        }
-    }
-
-    override suspend fun refreshToken(refreshToken: String): String? {
-        return try {
-            val request = RefreshTokenRequest(refreshToken)
-            val response = api.refreshToken(request)
-            response.body()?.newToken
-        } catch (e: IOException) {
-            null
         }
     }
 }

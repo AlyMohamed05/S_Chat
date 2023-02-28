@@ -2,9 +2,7 @@ package com.silverbullet.core.network.auth
 
 import com.silverbullet.core.network.BuildConfig
 import com.silverbullet.core.network.auth.model.request.LoginRequest
-import com.silverbullet.core.network.auth.model.request.RefreshTokenRequest
 import com.silverbullet.core.network.auth.model.request.SignupRequest
-import com.silverbullet.core.network.auth.model.response.RefreshTokenResponse
 import com.silverbullet.core.network.auth.model.response.SignupResponse
 import com.silverbullet.core.network.auth.model.response.TokenData
 import retrofit2.Response
@@ -27,9 +25,6 @@ internal interface RetrofitAuthApi {
 
     @GET("auth/is-valid/{username}")
     suspend fun isUsernameAvailable(@Path("username") username: String): Response<Unit>
-
-    @POST
-    suspend fun refreshToken(@Body request: RefreshTokenRequest): Response<RefreshTokenResponse>
 
     companion object{
         const val baseUrl = BuildConfig.BackendURL
