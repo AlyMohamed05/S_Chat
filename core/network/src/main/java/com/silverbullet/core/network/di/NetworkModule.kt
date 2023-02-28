@@ -4,6 +4,8 @@ import com.silverbullet.core.network.SChatApiNetworkInterceptor
 import com.silverbullet.core.network.TokenController
 import com.silverbullet.core.network.auth.AuthNetworkSource
 import com.silverbullet.core.network.auth.AuthNetworkSourceImpl
+import com.silverbullet.core.network.channels.ChannelsNetworkSource
+import com.silverbullet.core.network.channels.ChannelsNetworkSourceImpl
 import com.silverbullet.core.network.connections.ConnectionsNetworkSource
 import com.silverbullet.core.network.connections.ConnectionsNetworkSourceImpl
 import dagger.Module
@@ -47,4 +49,11 @@ object NetworkModule {
         json: Json,
         interceptor: Interceptor
     ): ConnectionsNetworkSource = ConnectionsNetworkSourceImpl(json, interceptor)
+
+    @Provides
+    @Singleton
+    fun provideChannelsNetworkSource(
+        json: Json,
+        interceptor: Interceptor
+    ): ChannelsNetworkSource = ChannelsNetworkSourceImpl(json, interceptor)
 }

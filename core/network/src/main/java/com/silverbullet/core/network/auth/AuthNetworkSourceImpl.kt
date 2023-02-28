@@ -72,6 +72,8 @@ class AuthNetworkSourceImpl(
             val response = api.login(loginRequest)
             if (response.isSuccessful && response.body() != null) {
                 return LoginResult.LoggedIn(
+                    userId = response.body()!!.userId,
+                    name = response.body()!!.name,
                     accessToken = response.body()!!.accessToken,
                     refreshToken = response.body()!!.refreshToken
                 )

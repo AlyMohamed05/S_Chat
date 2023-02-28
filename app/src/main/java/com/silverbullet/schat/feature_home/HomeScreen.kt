@@ -3,6 +3,7 @@ package com.silverbullet.schat.feature_home
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -17,16 +18,17 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.silverbullet.core.model.ChannelInfo
 import com.silverbullet.schat.core.ui.theme.LocalSpacing
 import com.silverbullet.schat.feature_home.components.HomeTop
 import com.silverbullet.schat.core.ui.components.DefaultInputField
 import com.silverbullet.schat.R
-import com.silverbullet.schat.core.model.Chat
+import com.silverbullet.schat.feature_home.components.ChannelItem
 
 @Composable
 fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel(),
-    onChatClick: (Chat) -> Unit
+    onChannelClick: (ChannelInfo) -> Unit
 ) {
 
     val searchText = viewModel.searchText.collectAsState()
@@ -34,6 +36,8 @@ fun HomeScreen(
     val usernameState = viewModel.usernameFieldState.collectAsState()
     val showAddUserDialog = viewModel.showAddUserDialog.collectAsState()
     val isTryingToConnectToUser = viewModel.isTryingToConnectWithUser.collectAsState()
+
+    val channels = viewModel.channels.collectAsState()
 
     val context = LocalContext.current
 
@@ -84,7 +88,15 @@ fun HomeScreen(
         )
         Spacer(modifier = Modifier.height(LocalSpacing.current.mediumSpace))
         LazyColumn {
-            // TODO: Show the channels for the user
+            items(channels.value) { channel ->
+                ChannelItem(
+                    channel = channel,
+                    isMyMessage = { true },
+                    onClick = { onChannelClick(it) },
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Spacer(modifier = Modifier.height(LocalSpacing.current.smallSpace))
+            }
         }
     }
 

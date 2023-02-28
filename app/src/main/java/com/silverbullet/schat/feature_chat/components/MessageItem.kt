@@ -12,7 +12,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.silverbullet.schat.core.model.Message
+import com.silverbullet.core.model.Message
 
 @Composable
 fun MessageItem(

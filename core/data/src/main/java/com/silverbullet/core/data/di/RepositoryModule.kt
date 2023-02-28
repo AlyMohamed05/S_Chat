@@ -7,6 +7,8 @@ import com.silverbullet.core.data.channels.ChannelsRepository
 import com.silverbullet.core.data.channels.ChannelsRepositoryImpl
 import com.silverbullet.core.data.connections.ConnectionsRepository
 import com.silverbullet.core.data.connections.ConnectionsRepositoryImpl
+import com.silverbullet.core.data.preferences.AndroidPreferences
+import com.silverbullet.core.data.preferences.Preferences
 import com.silverbullet.core.network.TokenController
 import dagger.Binds
 import dagger.Module
@@ -16,6 +18,9 @@ import dagger.hilt.components.SingletonComponent
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class RepositoryModule {
+
+    @Binds
+    abstract fun bindPreferences(preferences: AndroidPreferences): Preferences
 
     @Binds
     abstract fun bindAuthRepository(authRepositoryImpl: AuthRepositoryImpl): AuthRepository

@@ -2,9 +2,12 @@ package com.silverbullet.schat.feature_home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.silverbullet.core.data.channels.ChannelsRepository
+import com.silverbullet.core.data.channels.results.RepoUserChannelsResult
 import com.silverbullet.core.data.connections.ConnectionsRepository
 import com.silverbullet.core.data.connections.results.RepoConnectionResult
 import com.silverbullet.core.data.utils.RepoResult
+import com.silverbullet.core.model.ChannelInfo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,7 +18,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val connectionsRepository: ConnectionsRepository
+    private val connectionsRepository: ConnectionsRepository,
+    private val channelsRepository: ChannelsRepository
 ) : ViewModel() {
 
     private val _searchText = MutableStateFlow("")
@@ -31,8 +35,18 @@ class HomeViewModel @Inject constructor(
     private val _isTryingToConnectWithUser = MutableStateFlow(false)
     val isTryingToConnectWithUser = _isTryingToConnectWithUser.asStateFlow()
 
+    private val _isLoading = MutableStateFlow(false)
+    val isLoading = _isLoading.asStateFlow()
+
+    private val _channels = MutableStateFlow<List<ChannelInfo>>(emptyList())
+    val channels = _channels.asStateFlow()
+
     private val _events = MutableSharedFlow<UiEvent>()
     val events = _events.asSharedFlow()
+
+    init {
+        loadUserChannels()
+    }
 
     fun connectToUser() {
         val username = _usernameFieldState.value
@@ -93,6 +107,31 @@ class HomeViewModel @Inject constructor(
         // it should also clear the value
         _usernameFieldState.value = ""
         _showAddUserDialog.value = visible
+    }
+
+    private fun loadUserChannels() {
+        viewModelScope.launch {
+            channelsRepository
+                .getUserChannels()
+                .collect { repoResult ->
+                    when (repoResult) {
+                        is RepoResult.HasResult -> {
+                            _isLoading.value = false
+                            when (val channelResult = repoResult.result) {
+                                is RepoUserChannelsResult.Channels -> {
+                                    _channels.value = channelResult.channels
+                                }
+                                RepoUserChannelsResult.Failed -> _events.emit(
+                                    UiEvent.ToastMessage(
+                                        "Couldn't load"
+                                    )
+                                )
+                            }
+                        }
+                        is RepoResult.Loading -> _isLoading.value = true
+                    }
+                }
+        }
     }
 
     sealed interface UiEvent {

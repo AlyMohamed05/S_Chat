@@ -5,7 +5,6 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -13,7 +12,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -24,7 +22,6 @@ import com.silverbullet.schat.core.ui.components.DefaultInputField
 import com.silverbullet.schat.core.ui.theme.LocalSpacing
 import com.silverbullet.schat.core.utils.PreviewData
 import com.silverbullet.schat.R
-import com.silverbullet.schat.feature_chat.components.MessageItem
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -33,7 +30,7 @@ fun ChatScreen(
     onCloseClick: () -> Unit
 ) {
 
-    val chatState = viewModel.chatState.collectAsState()
+    val chatState = viewModel.channelState.collectAsState()
 
     val message = viewModel.messageText.collectAsState()
 
@@ -57,23 +54,7 @@ fun ChatScreen(
                     modifier = Modifier
                         .padding(horizontal = LocalSpacing.current.smallSpace)
                 ) {
-                    item { Spacer(modifier = Modifier.height(LocalSpacing.current.smallSpace)) }
-                    items(chat.messages) { message ->
-                        Box(
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            MessageItem(
-                                message = message,
-                                ownMessage = true,
-                                modifier = Modifier
-                                    .widthIn(max = LocalConfiguration.current.screenWidthDp.dp * 0.7f)
-                                    .align(
-                                        Alignment.TopEnd
-                                    )
-                            )
-                        }
-                        Spacer(modifier = Modifier.height(LocalSpacing.current.smallSpace))
-                    }
+                    // TODO: Show the messages
                 }
             }
         }

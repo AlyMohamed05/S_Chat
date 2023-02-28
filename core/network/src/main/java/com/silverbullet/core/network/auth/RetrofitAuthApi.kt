@@ -4,7 +4,7 @@ import com.silverbullet.core.network.BuildConfig
 import com.silverbullet.core.network.auth.model.request.LoginRequest
 import com.silverbullet.core.network.auth.model.request.SignupRequest
 import com.silverbullet.core.network.auth.model.response.SignupResponse
-import com.silverbullet.core.network.auth.model.response.TokenData
+import com.silverbullet.core.network.auth.model.response.LoginResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -21,7 +21,7 @@ internal interface RetrofitAuthApi {
     suspend fun signup(@Body request: SignupRequest): Response<SignupResponse>
 
     @POST("auth/login")
-    suspend fun login(@Body request: LoginRequest): Response<TokenData>
+    suspend fun login(@Body request: LoginRequest): Response<LoginResponse>
 
     @GET("auth/is-valid/{username}")
     suspend fun isUsernameAvailable(@Path("username") username: String): Response<Unit>

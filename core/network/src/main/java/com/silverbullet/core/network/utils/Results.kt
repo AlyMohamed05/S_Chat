@@ -16,6 +16,8 @@ sealed interface SignupResult {
 sealed interface LoginResult {
 
     data class LoggedIn(
+        val userId: Int,
+        val name: String,
         val accessToken: String,
         val refreshToken: String
     ) : LoginResult
