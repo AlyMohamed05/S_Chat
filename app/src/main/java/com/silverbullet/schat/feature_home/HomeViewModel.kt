@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -46,6 +47,15 @@ class HomeViewModel @Inject constructor(
 
     init {
         loadUserChannels()
+
+        viewModelScope.launch {
+            channelsRepository
+                .channels
+                .collectLatest {
+                    _channels.value = it
+
+                }
+        }
     }
 
     fun connectToUser() {
@@ -68,11 +78,13 @@ class HomeViewModel @Inject constructor(
                                     )
                                     _showAddUserDialog.value = false
                                 }
+
                                 RepoConnectionResult.UserNotFound -> _events.emit(
                                     UiEvent.ToastMessage(
                                         "User not found"
                                     )
                                 )
+
                                 RepoConnectionResult.AlreadyConnected -> {
                                     _events.emit(
                                         UiEvent.ToastMessage(
@@ -81,9 +93,11 @@ class HomeViewModel @Inject constructor(
                                     )
                                     _showAddUserDialog.value = false
                                 }
+
                                 RepoConnectionResult.UnexpectedError -> Unit
                             }
                         }
+
                         is RepoResult.Loading -> {
                             _isTryingToConnectWithUser.value = true
                         }
@@ -117,17 +131,19 @@ class HomeViewModel @Inject constructor(
                     when (repoResult) {
                         is RepoResult.HasResult -> {
                             _isLoading.value = false
-                            when (val channelResult = repoResult.result) {
-                                is RepoUserChannelsResult.Channels -> {
-                                    _channels.value = channelResult.channels
-                                }
+                            when (repoResult.result) {
+
+                                is RepoUserChannelsResult.Loaded -> Unit
+
                                 RepoUserChannelsResult.Failed -> _events.emit(
                                     UiEvent.ToastMessage(
                                         "Couldn't load"
                                     )
                                 )
+
                             }
                         }
+
                         is RepoResult.Loading -> _isLoading.value = true
                     }
                 }

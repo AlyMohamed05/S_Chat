@@ -4,6 +4,10 @@ import com.silverbullet.core.model.UserInfo
 
 interface Preferences {
 
+    fun isLoggedIn(): Boolean
+
+    fun setIsLoggedIn(value: Boolean)
+
     fun saveUserInfo(userInfo: UserInfo)
 
     fun loadUserInfo(): UserInfo?
@@ -11,6 +15,8 @@ interface Preferences {
     companion object{
 
         const val SHARED_PREF_NAME = "S_Chat_Pref"
+
+        const val IS_LOGGED_IN = "is_logged_in"
 
         const val KEY_ACCESS_TOKEN = "access_token"
 

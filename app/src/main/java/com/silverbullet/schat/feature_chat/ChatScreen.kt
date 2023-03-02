@@ -5,6 +5,7 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -20,8 +21,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.silverbullet.schat.feature_chat.components.ChatTop
 import com.silverbullet.schat.core.ui.components.DefaultInputField
 import com.silverbullet.schat.core.ui.theme.LocalSpacing
-import com.silverbullet.schat.core.utils.PreviewData
 import com.silverbullet.schat.R
+import com.silverbullet.schat.feature_chat.components.MessageItem
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -30,9 +31,9 @@ fun ChatScreen(
     onCloseClick: () -> Unit
 ) {
 
-    val chatState = viewModel.channelState.collectAsState()
-
     val message = viewModel.messageText.collectAsState()
+
+    val channelMessages = viewModel.channelMessages.collectAsState()
 
     val systemKeyboard = LocalSoftwareKeyboardController.current
 
@@ -43,18 +44,25 @@ fun ChatScreen(
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
             ChatTop(
-                user = PreviewData.user,
+                username = viewModel.username,
                 onCloseClick = onCloseClick,
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(MaterialTheme.colors.surface)
             )
-            chatState.value?.let { chat ->
-                LazyColumn(
-                    modifier = Modifier
-                        .padding(horizontal = LocalSpacing.current.smallSpace)
-                ) {
-                    // TODO: Show the messages
+            LazyColumn(
+                modifier = Modifier
+                    .padding(horizontal = LocalSpacing.current.smallSpace)
+            ) {
+                item { Spacer(modifier = Modifier.height(8.dp)) }
+                items(channelMessages.value) {
+                    MessageItem(
+                        message = it,
+                        ownMessage = true,
+                        modifier = Modifier
+                            .wrapContentSize()
+                    )
+                    Spacer(modifier = Modifier.height(LocalSpacing.current.smallSpace))
                 }
             }
         }
@@ -68,7 +76,7 @@ fun ChatScreen(
         ) {
             DefaultInputField(
                 text = message.value,
-                onValueChange = viewModel::setMessageText,
+                onValueChange = { viewModel.onEvent(ChatScreenEvent.MessageFieldUpdated(it)) },
                 hint = stringResource(id = R.string.message_hint),
                 modifier = Modifier
                     .animateContentSize()
@@ -78,7 +86,7 @@ fun ChatScreen(
                 IconButton(
                     onClick = {
                         systemKeyboard?.hide()
-                        viewModel.send()
+                        viewModel.onEvent(ChatScreenEvent.Send)
                     }
                 ) {
                     Icon(

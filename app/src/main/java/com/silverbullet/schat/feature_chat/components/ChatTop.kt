@@ -20,7 +20,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.silverbullet.schat.R
-import com.silverbullet.schat.core.model.User
 import com.silverbullet.schat.core.ui.theme.LocalSpacing
 
 @Composable
@@ -28,7 +27,7 @@ fun ChatTop(
     modifier: Modifier = Modifier,
     onCloseClick: () -> Unit = {},
     height: Dp = 96.dp,
-    user: User
+    username: String // TODO: Update this field to have user data
 ) {
     Row(
         modifier = modifier
@@ -47,11 +46,11 @@ fun ChatTop(
         Spacer(modifier = Modifier.width(LocalSpacing.current.mediumSpace))
         Column {
             Text(
-                text = user.name,
+                text = username,
                 style = MaterialTheme.typography.h3
             )
             Spacer(modifier = Modifier.height(LocalSpacing.current.extraSmallSpace))
-            if (user.online) {
+            if (username.length > 3) { // TODO: Update this logic to working one
                 Text(
                     text = stringResource(id = R.string.online),
                     color = Color(0xFF0D7612),

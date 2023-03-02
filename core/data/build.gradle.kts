@@ -38,6 +38,7 @@ android {
 dependencies {
 
     implementation(project(Modules.coreNetwork))
+    implementation(project(Modules.coreDatabase))
     implementation(project(Modules.coreModel))
 
     implementation(DaggerHilt.hiltAndroid)

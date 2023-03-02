@@ -8,6 +8,8 @@ import com.silverbullet.core.network.channels.ChannelsNetworkSource
 import com.silverbullet.core.network.channels.ChannelsNetworkSourceImpl
 import com.silverbullet.core.network.connections.ConnectionsNetworkSource
 import com.silverbullet.core.network.connections.ConnectionsNetworkSourceImpl
+import com.silverbullet.core.network.messages.MessagesNetworkSource
+import com.silverbullet.core.network.messages.MessagesNetworkSourceImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -56,4 +58,11 @@ object NetworkModule {
         json: Json,
         interceptor: Interceptor
     ): ChannelsNetworkSource = ChannelsNetworkSourceImpl(json, interceptor)
+
+    @Provides
+    @Singleton
+    fun provideMessagesNetworkSource(
+        json: Json,
+        interceptor: Interceptor
+    ): MessagesNetworkSource = MessagesNetworkSourceImpl(json, interceptor)
 }

@@ -1,8 +1,8 @@
 package com.silverbullet.core.data.mapper
 
+import com.example.core.database.entity.UserInfoEntity
 import com.silverbullet.core.model.UserInfo
 import com.silverbullet.core.network.auth.model.response.SignupResponse
-import com.silverbullet.core.network.model.response.NetworkUserInfo
 
 fun SignupResponse.toUserInfo(): UserInfo = UserInfo(
     id = id,
@@ -10,7 +10,7 @@ fun SignupResponse.toUserInfo(): UserInfo = UserInfo(
     username = username
 )
 
-fun NetworkUserInfo.toUserInfo(): UserInfo =
+fun UserInfoEntity.toExternalModel(): UserInfo =
     UserInfo(
         id = id,
         username = username,

@@ -1,5 +1,7 @@
 package com.silverbullet.core.data.auth
 
+import com.example.core.database.dao.UserInfoDao
+import com.example.core.database.entity.UserInfoEntity
 import com.silverbullet.core.data.auth.results.RepoLoginResult
 import com.silverbullet.core.data.auth.results.RepoSignupResult
 import com.silverbullet.core.data.mapper.toUserInfo
@@ -16,6 +18,7 @@ import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(
     private val authNetworkSource: AuthNetworkSource,
+    private val usersDao: UserInfoDao,
     private val tokenController: TokenController,
     private val preferences: Preferences
 ) : AuthRepository {
@@ -37,10 +40,18 @@ class AuthRepositoryImpl @Inject constructor(
                 val result = RepoSignupResult.SignedUpSuccessfully(userInfo)
                 emit(RepoResult.HasResult(result))
                 preferences.saveUserInfo(userInfo)
+                val userEntity = UserInfoEntity(
+                    username = userInfo.username,
+                    name = userInfo.name,
+                    id = userInfo.id
+                )
+                usersDao.insertUser(userEntity)
             }
+
             is SignupResult.UsernameAlreadyUsed -> {
                 emit(RepoResult.HasResult(result = RepoSignupResult.UsernameAlreadyUsed))
             }
+
             else -> Unit
         }
     }
@@ -62,8 +73,16 @@ class AuthRepositoryImpl @Inject constructor(
                         username = username,
                         name = loginResult.name
                     )
+                    preferences.setIsLoggedIn(true)
                     preferences.saveUserInfo(userInfo)
+                    val userEntity = UserInfoEntity(
+                        username = userInfo.username,
+                        name = userInfo.name,
+                        id = userInfo.id
+                    )
+                    usersDao.insertUser(userEntity)
                 }
+
                 LoginResult.InvalidCredentials -> {
                     emit(RepoResult.HasResult(result = RepoLoginResult.InvalidCredentials))
                 }

@@ -1,6 +1,7 @@
 package com.silverbullet.core.network.utils
 
 import com.silverbullet.core.network.auth.model.response.SignupResponse
+import com.silverbullet.core.network.model.response.NetworkMessage
 
 sealed interface SignupResult {
 
@@ -42,4 +43,37 @@ sealed interface ConnectionResult {
     object NetworkError : ConnectionResult
 
     object UnexpectedError: ConnectionResult
+}
+
+sealed interface ChannelMessagesResult{
+
+    data class Successful(val messages: List<NetworkMessage>): ChannelMessagesResult
+
+    object NetworkError: ChannelMessagesResult
+
+    object UnexpectedError: ChannelMessagesResult
+}
+
+sealed interface SendMessageResult{
+
+    object Sent: SendMessageResult
+
+    object UserNotFound: SendMessageResult
+
+    object NotConnectedToUser: SendMessageResult
+
+    object NetworkError: SendMessageResult
+
+    object UnexpectedError: SendMessageResult
+}
+
+sealed interface MarkAsSeenResult{
+
+    object Successful: MarkAsSeenResult
+
+    object MessageNotFound: MarkAsSeenResult
+
+    object NetworkError: MarkAsSeenResult
+
+    object UnexpectedError: MarkAsSeenResult
 }

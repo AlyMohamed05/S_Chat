@@ -7,6 +7,8 @@ import com.silverbullet.core.data.channels.ChannelsRepository
 import com.silverbullet.core.data.channels.ChannelsRepositoryImpl
 import com.silverbullet.core.data.connections.ConnectionsRepository
 import com.silverbullet.core.data.connections.ConnectionsRepositoryImpl
+import com.silverbullet.core.data.messages.MessagesRepository
+import com.silverbullet.core.data.messages.MessagesRepositoryImpl
 import com.silverbullet.core.data.preferences.AndroidPreferences
 import com.silverbullet.core.data.preferences.Preferences
 import com.silverbullet.core.network.TokenController
@@ -33,4 +35,7 @@ abstract class RepositoryModule {
 
     @Binds
     abstract fun bindTokenController(tokenControllerImpl: TokenControllerImpl): TokenController
+
+    @Binds
+    abstract fun bindMessagesRepository(messagesRepository: MessagesRepositoryImpl): MessagesRepository
 }

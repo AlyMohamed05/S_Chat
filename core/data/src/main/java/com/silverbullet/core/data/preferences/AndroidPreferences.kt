@@ -8,6 +8,18 @@ class AndroidPreferences @Inject constructor(
     private val sharedPref: SharedPreferences
 ) : Preferences {
 
+    override fun isLoggedIn(): Boolean {
+        return sharedPref
+            .getBoolean(Preferences.IS_LOGGED_IN, false)
+    }
+
+    override fun setIsLoggedIn(value: Boolean) {
+        sharedPref
+            .edit()
+            .putBoolean(Preferences.IS_LOGGED_IN, value)
+            .apply()
+    }
+
     override fun saveUserInfo(userInfo: UserInfo) {
         sharedPref
             .edit()
