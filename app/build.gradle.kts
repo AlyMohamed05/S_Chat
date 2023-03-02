@@ -65,6 +65,10 @@ android {
 
 dependencies {
 
+    implementation(project(Modules.coreData))
+    implementation(project(Modules.coreModel))
+    implementation(project(Modules.coreSync))
+
     implementation (AndroidX.coreKtx)
     implementation(AndroidX.lifecycleRuntimeKtx)
     implementation(AndroidX.splashscreen)
@@ -80,11 +84,12 @@ dependencies {
 
     implementation(DaggerHilt.hiltAndroid)
     kapt(DaggerHilt.hiltCompiler)
+    implementation(DaggerHilt.hiltWork)
+    kapt(DaggerHilt.hiltWorkCompiler)
+
+    implementation(WorkManager.workManagerKtx)
 
     implementation(Timber.timber)
-
-    implementation(project(Modules.coreData))
-    implementation(project(Modules.coreModel))
 
     testImplementation(Testing.junit4)
     testImplementation(Testing.composeUiTest)
