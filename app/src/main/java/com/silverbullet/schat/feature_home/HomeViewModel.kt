@@ -3,7 +3,6 @@ package com.silverbullet.schat.feature_home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.silverbullet.core.data.channels.ChannelsRepository
-import com.silverbullet.core.data.channels.results.RepoUserChannelsResult
 import com.silverbullet.core.data.connections.ConnectionsRepository
 import com.silverbullet.core.data.connections.results.RepoConnectionResult
 import com.silverbullet.core.data.utils.RepoResult
@@ -46,8 +45,6 @@ class HomeViewModel @Inject constructor(
     val events = _events.asSharedFlow()
 
     init {
-        loadUserChannels()
-
         viewModelScope.launch {
             channelsRepository
                 .channels
@@ -121,33 +118,6 @@ class HomeViewModel @Inject constructor(
         // it should also clear the value
         _usernameFieldState.value = ""
         _showAddUserDialog.value = visible
-    }
-
-    private fun loadUserChannels() {
-        viewModelScope.launch {
-            channelsRepository
-                .getUserChannels()
-                .collect { repoResult ->
-                    when (repoResult) {
-                        is RepoResult.HasResult -> {
-                            _isLoading.value = false
-                            when (repoResult.result) {
-
-                                is RepoUserChannelsResult.Loaded -> Unit
-
-                                RepoUserChannelsResult.Failed -> _events.emit(
-                                    UiEvent.ToastMessage(
-                                        "Couldn't load"
-                                    )
-                                )
-
-                            }
-                        }
-
-                        is RepoResult.Loading -> _isLoading.value = true
-                    }
-                }
-        }
     }
 
     sealed interface UiEvent {
