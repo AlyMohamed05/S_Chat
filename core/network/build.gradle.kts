@@ -43,9 +43,16 @@ android {
 }
 
 dependencies {
+
+    implementation(Ktor.clientCore)
+    implementation(Ktor.clientCIO)
+    implementation(Ktor.clientWebsocket)
+
     implementation(Retrofit.retrofit)
     implementation(Retrofit.kotlinxSerializationConverter)
+
     implementation(OkHttp.loggingInterceptor)
+
     implementation(Kotlin.kotlinxSerialization)
 
     implementation(DaggerHilt.hiltAndroid)

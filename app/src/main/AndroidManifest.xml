@@ -38,6 +38,8 @@
 
         </activity>
 
+        <service android:name=".EventsService"/>
+
     </application>
 
 </manifest>

@@ -1,5 +1,6 @@
 package com.silverbullet.schat
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -54,5 +55,17 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        val eventService = Intent(applicationContext, EventsService::class.java)
+        startService(eventService)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        val eventService = Intent(applicationContext, EventsService::class.java)
+        stopService(eventService)
     }
 }

@@ -7,6 +7,8 @@ import com.silverbullet.core.data.channels.ChannelsRepository
 import com.silverbullet.core.data.channels.ChannelsRepositoryImpl
 import com.silverbullet.core.data.connections.ConnectionsRepository
 import com.silverbullet.core.data.connections.ConnectionsRepositoryImpl
+import com.silverbullet.core.data.events.EventsRepository
+import com.silverbullet.core.data.events.EventsRepositoryImpl
 import com.silverbullet.core.data.messages.MessagesRepository
 import com.silverbullet.core.data.messages.MessagesRepositoryImpl
 import com.silverbullet.core.data.preferences.AndroidPreferences
@@ -38,4 +40,7 @@ abstract class RepositoryModule {
 
     @Binds
     abstract fun bindMessagesRepository(messagesRepository: MessagesRepositoryImpl): MessagesRepository
+
+    @Binds
+    abstract fun bindEventsRepository(repository: EventsRepositoryImpl): EventsRepository
 }
