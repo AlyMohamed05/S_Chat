@@ -25,4 +25,7 @@ interface ChannelDao {
     @Query("SELECT * FROM t_channels")
     @Transaction
     fun getChannels(): Flow<List<ChannelFull>>
+
+    @Query("SELECT id FROM t_channels")
+    suspend fun getChannelIds(): List<Int>
 }

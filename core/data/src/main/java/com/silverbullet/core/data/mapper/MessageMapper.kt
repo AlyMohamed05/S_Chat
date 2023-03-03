@@ -2,6 +2,17 @@ package com.silverbullet.core.data.mapper
 
 import com.example.core.database.entity.MessageEntity
 import com.silverbullet.core.model.Message
+import com.silverbullet.core.network.model.response.NetworkMessage
+
+fun NetworkMessage.toMessageEntity(): MessageEntity =
+    MessageEntity(
+        senderId = senderId,
+        receiverId = receiverId,
+        text = text,
+        channelId = channelId,
+        seen = seen,
+        id = id
+    )
 
 fun MessageEntity.toExternalModel(): Message =
     Message(

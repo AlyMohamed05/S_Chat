@@ -2,6 +2,7 @@ package com.example.core.database.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Transaction
 import com.example.core.database.entity.ChannelEntity
 import com.example.core.database.entity.MessageEntity
@@ -11,13 +12,13 @@ import com.example.core.database.model.ChannelFull
 @Dao
 interface ChannelFullDao {
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertChannel(channelEntity: ChannelEntity)
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertUserInfo(userInfo: UserInfoEntity)
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertMessage(messageEntity: MessageEntity)
 
     @Transaction

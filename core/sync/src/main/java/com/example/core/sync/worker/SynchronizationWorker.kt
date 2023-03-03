@@ -13,7 +13,6 @@ import com.silverbullet.core.data.messages.MessagesRepository
 import com.silverbullet.core.data.preferences.Preferences
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
-import kotlinx.coroutines.delay
 
 @HiltWorker
 class SynchronizationWorker @AssistedInject constructor(
@@ -26,11 +25,11 @@ class SynchronizationWorker @AssistedInject constructor(
 
     // TODO: Implement real synchronization
     override suspend fun doWork(): Result {
-        println("Doing some work...")
-        delay(10000)
-        println("Finished the work")
-        val isUserLoggedIn = preferences.isLoggedIn()
-        println("IsUserLoggedIn : $isUserLoggedIn")
+        if (!preferences.isLoggedIn()) {
+            return Result.failure()
+        }
+        channelsRepository.synchronize()
+        messagesRepository.synchronize()
         return Result.success()
     }
 

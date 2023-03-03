@@ -130,7 +130,7 @@ fun HomeScreen(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = LocalSpacing.current.smallSpace),
+                        .padding(horizontal = LocalSpacing.current.mediumSpace),
                     horizontalArrangement = Arrangement.End
                 ) {
                     if (isTryingToConnectToUser.value) {

@@ -1,15 +1,21 @@
 package com.silverbullet.core.data.messages
 
+import com.example.core.database.dao.ChannelDao
 import com.example.core.database.dao.MessagesDao
 import com.example.core.database.entity.MessageEntity
 import com.silverbullet.core.data.mapper.toExternalModel
+import com.silverbullet.core.data.mapper.toMessageEntity
 import com.silverbullet.core.data.messages.results.RepoMarkAsSeenResult
 import com.silverbullet.core.data.messages.results.RepoSendMessageResult
 import com.silverbullet.core.data.utils.RepoResult
 import com.silverbullet.core.model.Message
 import com.silverbullet.core.network.messages.MessagesNetworkSource
+import com.silverbullet.core.network.utils.ChannelMessagesResult
 import com.silverbullet.core.network.utils.MarkAsSeenResult
 import com.silverbullet.core.network.utils.SendMessageResult
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
@@ -17,7 +23,8 @@ import javax.inject.Inject
 
 class MessagesRepositoryImpl @Inject constructor(
     private val messagesNetworkSource: MessagesNetworkSource,
-    private val messagesDao: MessagesDao
+    private val messagesDao: MessagesDao,
+    private val channelsDao: ChannelDao
 ) : MessagesRepository {
 
     override fun getChannelMessages(channelId: Int): Flow<List<Message>> =
@@ -59,4 +66,25 @@ class MessagesRepositoryImpl @Inject constructor(
                 }
             emit(RepoResult.HasResult(repoResult))
         }
+
+    override suspend fun synchronize() {
+        val channelIds = channelsDao.getChannelIds()
+        val channelsMessagesNetworkRequests =
+            channelIds
+                .map { coroutineScope { async { messagesNetworkSource.getChannelMessages(it) } } }
+        channelsMessagesNetworkRequests
+            .awaitAll()
+            .forEach { channelMessagesNetworkResult ->
+                when (channelMessagesNetworkResult) {
+                    is ChannelMessagesResult.Successful -> {
+                        channelMessagesNetworkResult.messages.forEach { message ->
+                            messagesDao.insertMessage(message.toMessageEntity())
+                        }
+                    }
+
+                    else -> Unit
+                }
+            }
+
+    }
 }
