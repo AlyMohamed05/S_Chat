@@ -18,12 +18,12 @@ class ChannelsRepositoryImpl @Inject constructor(
     private val preferences: Preferences
 ) : ChannelsRepository {
 
-    private val userInfo = preferences.loadUserInfo()!!
+    private val userId = preferences.loadUserInfo()?.id ?: -1
 
     override val channels: Flow<List<ChannelInfo>>
         get() = channelsDao
             .getChannels()
-            .map { it.map { channel -> channel.toExternalModel(userInfo.id) } }
+            .map { it.map { channel -> channel.toExternalModel(userId) } }
 
     override suspend fun synchronize() {
         val channelsNetworkResult = channelsNetworkSource
@@ -32,6 +32,6 @@ class ChannelsRepositoryImpl @Inject constructor(
         val channelEntities = channelsNetworkResult.map { networkChannel ->
             networkChannel.toChannelFullEntity(currentUserId)
         }
-        channelEntities.forEach { channel -> channelFullDao.insertChannelFull(channel) }
+        channelFullDao.insertAllChannelFull(channelEntities)
     }
 }

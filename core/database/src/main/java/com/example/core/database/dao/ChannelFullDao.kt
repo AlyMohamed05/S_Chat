@@ -13,18 +13,21 @@ import com.example.core.database.model.ChannelFull
 interface ChannelFullDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insertChannel(channelEntity: ChannelEntity)
+    suspend fun insertAllChannel(channels: List<ChannelEntity>)
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insertUserInfo(userInfo: UserInfoEntity)
+    suspend fun insertAllUsersInfos(usersInfos: List<UserInfoEntity>)
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insertMessage(messageEntity: MessageEntity)
+    suspend fun insertAllMessages(messages: List<MessageEntity>)
 
     @Transaction
-    suspend fun insertChannelFull(channel: ChannelFull) {
-        insertUserInfo(channel.friend)
-        channel.lastSeenMessage?.let { message -> insertMessage(message) }
-        insertChannel(channel.channel)
+    suspend fun insertAllChannelFull(channels: List<ChannelFull>) {
+        val usersInfos = channels.map { it.friend }
+        val channelsInfos = channels.map { it.channel }
+        val lastSeenMessages = channels.mapNotNull { it.lastSeenMessage }
+        insertAllUsersInfos(usersInfos)
+        insertAllChannel(channelsInfos)
+        insertAllMessages(lastSeenMessages)
     }
 }

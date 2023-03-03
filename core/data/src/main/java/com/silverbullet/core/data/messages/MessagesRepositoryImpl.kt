@@ -10,6 +10,7 @@ import com.silverbullet.core.data.preferences.Preferences
 import com.silverbullet.core.data.utils.RepoResult
 import com.silverbullet.core.model.Message
 import com.silverbullet.core.network.messages.MessagesNetworkSource
+import com.silverbullet.core.network.model.response.NetworkMessage
 import com.silverbullet.core.network.utils.ChannelMessagesResult
 import com.silverbullet.core.network.utils.MarkAsSeenResult
 import com.silverbullet.core.network.utils.SendMessageResult
@@ -28,12 +29,12 @@ class MessagesRepositoryImpl @Inject constructor(
     preferences: Preferences
 ) : MessagesRepository {
 
-    private val userInfo = preferences.loadUserInfo()!!
+    private val userId = preferences.loadUserInfo()?.id ?: -1
 
     override fun getChannelMessages(channelId: Int): Flow<List<Message>> =
         messagesDao
             .getChannelMessages(channelId)
-            .map { it.map { message -> message.toExternalModel(userInfo.id) } }
+            .map { it.map { message -> message.toExternalModel(userId) } }
 
     override fun sendMessage(
         username: String,
@@ -80,9 +81,9 @@ class MessagesRepositoryImpl @Inject constructor(
             .forEach { channelMessagesNetworkResult ->
                 when (channelMessagesNetworkResult) {
                     is ChannelMessagesResult.Successful -> {
-                        channelMessagesNetworkResult.messages.forEach { message ->
-                            messagesDao.insertMessage(message.toMessageEntity())
-                        }
+                        val messages =
+                            channelMessagesNetworkResult.messages.map(NetworkMessage::toMessageEntity)
+                        messagesDao.insertAllMessages(messages)
                     }
 
                     else -> Unit

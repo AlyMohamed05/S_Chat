@@ -13,6 +13,9 @@ interface MessagesDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertMessage(message: MessageEntity)
 
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertAllMessages(messages: List<MessageEntity>)
+
     @Query("UPDATE t_messages SET seen =:seen WHERE id = :messageId")
     suspend fun updateMessageSeenStatus(messageId: String, seen: Boolean)
 
