@@ -6,5 +6,6 @@ data class Message(
     val channelId: Int,
     val text: String,
     val seen: Boolean,
+    val isOwnMessage: Boolean,
     val id: String
 )

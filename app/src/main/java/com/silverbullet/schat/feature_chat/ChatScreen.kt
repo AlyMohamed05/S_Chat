@@ -13,6 +13,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -50,18 +51,23 @@ fun ChatScreen(
                     .fillMaxWidth()
                     .background(MaterialTheme.colors.surface)
             )
+            val screenWidthDb = LocalConfiguration.current.screenWidthDp.dp
             LazyColumn(
                 modifier = Modifier
                     .padding(horizontal = LocalSpacing.current.smallSpace)
             ) {
                 item { Spacer(modifier = Modifier.height(8.dp)) }
                 items(channelMessages.value) {
-                    MessageItem(
-                        message = it,
-                        ownMessage = true,
-                        modifier = Modifier
-                            .wrapContentSize()
-                    )
+                    Box(modifier = Modifier.fillMaxWidth()) {
+                        MessageItem(
+                            message = it,
+                            ownMessage = it.isOwnMessage,
+                            modifier = Modifier
+                                .widthIn(max = screenWidthDb * 0.6f)
+                                .wrapContentHeight()
+                                .align(if (it.isOwnMessage) Alignment.CenterEnd else Alignment.CenterStart)
+                        )
+                    }
                     Spacer(modifier = Modifier.height(LocalSpacing.current.smallSpace))
                 }
             }

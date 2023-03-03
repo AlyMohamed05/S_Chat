@@ -2,7 +2,6 @@ package com.silverbullet.core.data.channels
 
 import com.example.core.database.dao.ChannelDao
 import com.example.core.database.dao.ChannelFullDao
-import com.example.core.database.model.ChannelFull
 import com.silverbullet.core.data.mapper.toChannelFullEntity
 import com.silverbullet.core.data.mapper.toExternalModel
 import com.silverbullet.core.data.preferences.Preferences
@@ -19,10 +18,12 @@ class ChannelsRepositoryImpl @Inject constructor(
     private val preferences: Preferences
 ) : ChannelsRepository {
 
+    private val userInfo = preferences.loadUserInfo()!!
+
     override val channels: Flow<List<ChannelInfo>>
         get() = channelsDao
             .getChannels()
-            .map { it.map(ChannelFull::toExternalModel) }
+            .map { it.map { channel -> channel.toExternalModel(userInfo.id) } }
 
     override suspend fun synchronize() {
         val channelsNetworkResult = channelsNetworkSource

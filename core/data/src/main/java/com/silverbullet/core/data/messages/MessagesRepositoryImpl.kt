@@ -2,11 +2,11 @@ package com.silverbullet.core.data.messages
 
 import com.example.core.database.dao.ChannelDao
 import com.example.core.database.dao.MessagesDao
-import com.example.core.database.entity.MessageEntity
 import com.silverbullet.core.data.mapper.toExternalModel
 import com.silverbullet.core.data.mapper.toMessageEntity
 import com.silverbullet.core.data.messages.results.RepoMarkAsSeenResult
 import com.silverbullet.core.data.messages.results.RepoSendMessageResult
+import com.silverbullet.core.data.preferences.Preferences
 import com.silverbullet.core.data.utils.RepoResult
 import com.silverbullet.core.model.Message
 import com.silverbullet.core.network.messages.MessagesNetworkSource
@@ -24,13 +24,16 @@ import javax.inject.Inject
 class MessagesRepositoryImpl @Inject constructor(
     private val messagesNetworkSource: MessagesNetworkSource,
     private val messagesDao: MessagesDao,
-    private val channelsDao: ChannelDao
+    private val channelsDao: ChannelDao,
+    preferences: Preferences
 ) : MessagesRepository {
+
+    private val userInfo = preferences.loadUserInfo()!!
 
     override fun getChannelMessages(channelId: Int): Flow<List<Message>> =
         messagesDao
             .getChannelMessages(channelId)
-            .map { it.map(MessageEntity::toExternalModel) }
+            .map { it.map { message -> message.toExternalModel(userInfo.id) } }
 
     override fun sendMessage(
         username: String,

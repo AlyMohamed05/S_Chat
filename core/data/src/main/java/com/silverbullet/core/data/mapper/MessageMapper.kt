@@ -14,12 +14,13 @@ fun NetworkMessage.toMessageEntity(): MessageEntity =
         id = id
     )
 
-fun MessageEntity.toExternalModel(): Message =
+fun MessageEntity.toExternalModel(currentUserId: Int): Message =
     Message(
         senderId = senderId,
         receiverId = receiverId,
         channelId = channelId,
         text = text,
         seen = seen,
+        isOwnMessage = senderId == currentUserId,
         id = id
     )
